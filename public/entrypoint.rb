@@ -51,6 +51,7 @@ end
 
 #DEBUG = 1
 
+# implement autoloader
 class Module
   def debuglog(str)
     return if !Kernel.const_defined?('DEBUG') || DEBUG != 1
