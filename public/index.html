@@ -13,7 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@ruby/3.3-wasm-wasi@2.6.1/dist/browser.script.iife.js"></script>
     <script type="text/javascript">
 
-
       function step(timestamp) {
         const event = new CustomEvent("frame", {timestamp: timestamp});
         window.dispatchEvent(event);
@@ -22,7 +21,37 @@
       window.requestAnimationFrame(step);
 
     </script>
-    <script type="text/ruby" data-eval="async" src="entrypoint.rb"></script>
+    <script type="text/ruby" data-eval="async">
+      require 'js'
+
+      puts RUBY_VERSION # (Printed to the Web browser console)
+      stuff = JS.global[:document].getElementById('stuff')
+      stuff[:style][:color] = "#ff0"
+
+      body = JS.global[:document][:body]
+
+      thing = {
+        stuff: stuff,
+        prev: 0,
+      }
+
+      def move(state)
+
+        now = Time.now.to_f
+        prev = state[:prev]
+
+        state[:stuff][:innerText] = (now - prev).to_s
+
+        state[:prev] = now
+      end
+
+      JS.global.addEventListener("frame") do |event|
+        # puts event[:target]
+        move(thing)
+      end
+
+
+    </script>
 
   </body>
 </html>
